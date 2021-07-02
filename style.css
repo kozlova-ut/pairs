@@ -1,0 +1,120 @@
+.container {
+    display: flex;
+    justify-content: center;
+    perspective: 600px;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+p {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+}
+
+input {
+    flex-basis: 40px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 30px;
+}
+
+h2 {
+    margin-bottom: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 40px;
+    color: #186D81;
+}
+
+button {
+    padding: 10px 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+}
+
+.timer {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 40px;
+    color: #186D81;
+    border: 1px solid darkgray;
+}
+
+ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0px;
+}
+
+li {
+    position: relative;
+    display: block;
+    width: 78px;
+    height: 100px;
+    margin: 5px;
+    border: 1px solid #186D81;
+    border-radius: 3px;
+    list-style: none;
+    box-shadow: 2px 2px 5px rgba(122,122,122,0.5);
+    transition: transform 1s;
+    transform-style: preserve-3d;
+}
+
+.card__face {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    backface-visibility: hidden;
+  }
+
+.card__face--front {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-family: 'Architects Daughter', cursive;
+    color: #186D81;
+    box-shadow: 2px 2px 5px rgba(122,122,122,0.5);
+    transform: rotateY( 180deg );
+}
+
+.card__face--back {
+    background-image: url(back.png);
+    font-size: 0;
+}
+
+.is-flipped {
+    box-shadow: none;
+    transform: rotateY(180deg);
+}
+
+.founded {
+    box-shadow: none;
+    transform: rotateY(180deg);
+}
+
+.new-game {
+  margin-top: 60px;
+}
+
+
+
+
+
+
+
+
+
