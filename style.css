@@ -15,7 +15,7 @@ form {
     flex-direction: column;
 }
 
-p {
+span {
   text-align: center;
   font-family: 'Montserrat', sans-serif;
   font-size: 24px;
@@ -23,12 +23,12 @@ p {
 
 input {
     flex-basis: 40px;
-    margin-bottom: 20px;
+    margin: 20px 0px;
     text-align: center;
     font-size: 30px;
 }
 
-h2 {
+h1 {
     margin-bottom: 10px;
     font-family: 'Montserrat', sans-serif;
     font-size: 40px;

@@ -9,15 +9,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,200&display=swap" rel="stylesheet">
-    <script src="main.js"></script>
+    <!-- <script type="module" src="main.js"></script> -->
     <title>Пары</title>
 </head>
 <body>
     <div class="container" id="pairs-app"></div>   
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            createApp(document.getElementById('pairs-app'));
-        });
+    <script type="module">
+        import {app} from './main.js';
+        app.start();
     </script> 
 </body>
 </html>

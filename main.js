@@ -1,194 +1,95 @@
-(() => {
+import { appContainer, createItem, startTimer, createArray, Card, AmazingCard, Result } from "./functions.js";
 
-    function createArray(value) {
-        const size = value * value;
-        const array = [];
+export const app = {
+    start() {
+        this.startMenu.create();
+    },
 
-        for (let s = 1; s <= size/2; s++) {
-            array.push(s);
-            array.push(s);
-        };
+    startMenu: {
 
-        const newArray = shuffleArr(array);
+        set enteredValue(value) {
+            this._enteredValue = (value >= 2 && value <= 10 && value % 2 === 0 && value !== "") ? value : 4;
+        },
 
-        return {
-            newArray,
-            value,
-            size,
-        };
-    };
+        get enteredValue() {
+            return this._enteredValue;
+        },
 
-    function shuffleArr(array) {
-        const newArray = [];
+        create(){
+            const form = createItem('form');
+            this.form = form;
 
-        while (array.length > 0) {
-            const randomIndex = Math.round(Math.random()*(array.length-1));
-            const randomItem = array[randomIndex];
+            const question = createItem('h1', 'Введите размер поля');
+            const description = createItem('span', 'Укажите четное число от 2 до 10');
+            const input = createItem('input');
+            const button = createItem('button', 'Start');
 
-            newArray.push(randomItem);
-            array.splice(randomIndex,1);
-          };
+            form.append(question, description, input, button);
+            appContainer.append(form);
 
-        return newArray;
-    };
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.enteredValue = Number(input.value);
+                input.value = '';
+                this.clear();
+                app.game.start();
+            })
+        },
 
-    function startGame(container, input, field) {
-        let value = input.value;
+        clear() {
+            this.form.remove();
+        }
+    },
 
-        if (value < 2 || value > 10 || value % 2 != 0) {
-            value = 4;
-        };
+    game: {
 
-        const finish = document.createElement('div');
-        const losing = document.createElement('div');
+        intervalID: null,
+        timerValue: 60,
+        opened: [],
 
-        const congratulations = document.createElement('h2');
-        const lossMessage = document.createElement('h2');
-        const newGameWIN = document.createElement('button');
-        const newGameLOSE = document.createElement('button');
+        start(){
+            const gameContent = createItem('div');
+            const timer = createItem('div', '', 'timer');
+            this.gameContent = gameContent;
+            this.timer = timer;
+            this.size= app.startMenu.enteredValue;
 
-        congratulations.textContent = 'Поздравляю! Вы победили!';
-        lossMessage.textContent = 'Время вышло';
-        newGameWIN.textContent = 'Новая игра';
-        newGameLOSE.textContent = 'Новая игра';
-        newGameWIN.classList.add('new-game');
-        newGameLOSE.classList.add('new-game');
 
-        finish.append(congratulations);
-        finish.append(newGameWIN);
-        losing.append(lossMessage);
-        losing.append(newGameLOSE);
+            const container = createItem('ul');
+            container.style.width = 90 * this.size + 'px';
+            const cardNumbersArray = createArray(this.size);
 
-        const array = createArray(value).newArray;
-        const cardList = document.createElement('ul');
-        const timer = document.createElement('div');
-        const flipped = document.getElementsByClassName('is-flipped');
+            for (const cardNumber of cardNumbersArray) {
+                let card = new Card(this, container, cardNumber);
+            }
 
-        let timerValue = '60';
-        let counter = 0;
-        
-        timer.textContent = '60';
-        timer.classList.add('timer');
-        cardList.style.width = 90 * value + 'px';
+            gameContent.append(timer, container);
+            appContainer.append(gameContent);
 
-        field.append(timer);
-        field.append(cardList);
-        container.append(field);
+            startTimer(this);
+        },
 
-        function flipBack(){
-            const timeoutIDFlip = window.setTimeout(flipDelay, 1200);
-            const timeoutIDPointer = window.setTimeout(pointerDelay, 1400);
-        };
+        showResult(status) {
+            app.final.show(status)
+        },
 
-        function flipDelay(){
-            flipped[1].classList.remove('is-flipped');
-            flipped[0].classList.remove('is-flipped');
-        };
+        clear() {
+            clearInterval(this.intervalID);
+            this.timerValue = 60;
+            this.gameContent.remove();
+        }
+    },
 
-        function pointerDelay() {
-            const cards = document.getElementsByTagName('li');
-            for (const c of cards) {
-                c.style.pointerEvents = 'auto';
-            };
-        };
+    final: {
 
-        function reduseTimer(){
-            timerValue -=1;
-            timer.textContent = timerValue;
-            if (timerValue === -1) {
-                field.style.display = 'none';
-                container.append(losing);
-            };
-        };
+        show(status){
+            let result = new Result(app, this, status);
+            this.result = result;
+            appContainer.append(result.resultContent);
+        },
 
-        (function startTimer(){
-            timer.textContent = timerValue;
-            const intervalID = window.setInterval(reduseTimer, 1000)
-        })();
-
-        for (const a of array) {
-            const card = document.createElement('li');
-            const front = document.createElement('div');
-            const back = document.createElement('div');
-
-            front.classList.add('card__face', 'card__face--front');
-            back.classList.add('card__face', 'card__face--back');
-
-            card.append(front);
-            card.append(back);
-            cardList.append(card);
-            front.textContent = a;
-
-            card.addEventListener('click', () => {
-                card.classList.add('is-flipped');
-                card.style.pointerEvents = 'none';
-                counter++;
-
-                if (counter === 2 ) {
-                    const notFlipped = document.querySelectorAll('li:not(.is-flipped)');
-
-                    for (const n of notFlipped) {
-                        n.style.pointerEvents = 'none';
-                    };
-
-                    if (flipped[0].textContent === flipped[1].textContent){
-                        flipped[0].classList.add('founded');
-                        flipped[1].classList.add('founded');
-                    };
-
-                    const founded = document.querySelectorAll('.founded');
-
-                    if (founded.length === value*value) {
-                      const timeoutIDFinish = window.setTimeout(finishDelay, 1200);
-                    };
-
-                    flipBack();
-                    counter = 0;
-
-                    function finishDelay() {
-                        field.style.display = 'none';
-                        container.append(finish);
-                    };
-
-                    newGameWIN.addEventListener('click', () => {
-                      window.location.reload();
-                    });
-                };
-            });
-        };
-
-        newGameLOSE.addEventListener('click', () => {
-            window.location.reload();
-        });
-    };
-
-    function createApp(container) {
-        const questionForm = document.createElement('div');
-        const field = document.createElement('div');
-
-        const form = document.createElement('form');
-        const question = document.createElement('h2');
-        const condition = document.createElement('p');
-        const input = document.createElement('input');
-        const button = document.createElement('button');
-        
-        question.textContent = 'Введите размер поля';
-        condition.textContent = 'Укажите четное число от 2 до 10';
-        button.textContent = 'START';
-
-        form.append(question);
-        form.append(condition);
-        form.append(input);
-        form.append(button);
-        questionForm.append(form);
-        container.append(questionForm);
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            questionForm.style.display = 'none';
-            startGame(container ,input, field);
-        });
-    };
-
-    window.createApp = createApp;
-})();
+        clear() {
+            this.result.resultContent.remove();
+        }
+    }
+}
